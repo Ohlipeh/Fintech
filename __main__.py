@@ -1,9 +1,9 @@
-from fintech import ContaEmpresarial
-from banco import ContaBancariaRepository, Database
+from banco_dados.banco import ContaBancariaRepository, Database
+from metodos.fintech import ContaEmpresarial
+from interface.interface import iniciar_interface
+
 from rich.console import Console
 from rich.prompt import Prompt
-
-from interface import iniciar_interface
 
 console = Console()
 
