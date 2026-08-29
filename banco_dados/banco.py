@@ -1,6 +1,8 @@
+# Importação do SQLite
 import sqlite3
 
 
+# Classe Databebase para conectar e desconectar o banco
 class Database:
 
     def conectar(self):
@@ -13,6 +15,7 @@ class Database:
         print("CONEXÃO ENCERRADA!")
 
 
+# Classe Repository para criar as tabelas, futuramente pretendo colocar mais tabelas pra ficar completo, mas atualemnte vai ficar assim só pra teste.
 class Repository:
 
     def __init__(self, database):

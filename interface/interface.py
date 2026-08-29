@@ -1,7 +1,9 @@
+# Import do customtkinter para configurar o deskotp.
 import customtkinter as ctk
 from metodos.fintech import ContaBancaria
 
 
+# Coloquei uma mensagem de erro mundial pro codigo não ficar poluído.
 def mensagem_erro(mensagem):
     janela_erro = ctk.CTkToplevel()
     janela_erro.title("Erro")
@@ -14,7 +16,9 @@ def mensagem_erro(mensagem):
     botao.pack(pady=10)
 
 
+# Aqui é aonde inicia a interface, busco o cb e cb_repo do main e do banco.
 def iniciar_interface(cb, cb_repo):
+    # Root mexe na tela principal.
     root = ctk.CTk()
 
     root.title("Sistema Fintech")
@@ -29,6 +33,7 @@ def iniciar_interface(cb, cb_repo):
     lbl_saldo.pack()
 
     def acao_depositar():
+        # ctk.CTkToplevel() cria pop-ups.
         janela = ctk.CTkToplevel()
         janela.title("Depositar")
         janela.geometry("300x200")
@@ -74,6 +79,7 @@ def iniciar_interface(cb, cb_repo):
             else:
                 mensagem_erro("VALOR INVÁLIDO para saque!")
 
+        # Função para fazer os botões clicaveis.
         botao = ctk.CTkButton(janela, text="Sacar", command=confirmar_saque)
         botao.pack(pady=20)
 
@@ -104,6 +110,7 @@ def iniciar_interface(cb, cb_repo):
         botao = ctk.CTkButton(janela, text="Ok", command=janela.destroy)
         botao.pack(pady=20)
 
+    # Função que cria os botões.
     btn_depositar = ctk.CTkButton(root, text="Depositar", command=acao_depositar)
     btn_depositar.pack(pady=5)
 

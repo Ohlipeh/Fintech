@@ -1,3 +1,4 @@
+# Classe ContaBancaria
 class ContaBancaria:
     """
     Criando conta bancaria para uma Fintech
@@ -22,6 +23,7 @@ class ContaBancaria:
             return False
 
     def sacar(self, valor):
+        # Aqui coloquei um try pra mensagem de erro, no terminal.
         try:
             valor = float(valor)
             valor = abs(valor)
@@ -48,10 +50,12 @@ class ContaBancaria:
             print("Erro ao sacar: O valor informado deve ser um número.")
             return False
 
+    # property pra poder usar o saldo.
     @property
     def saldo(self):
         return self.__saldo
 
+    # property pra poder usar o titular.
     @property
     def titular(self):
         return self._titular
@@ -72,6 +76,7 @@ class ContaBancaria:
                 arquivo.write(movimento + "\n")
 
 
+# Criei uma classe ContaEmpresarial, ela cobra uma taxa de 5 reais pra cada saque.
 class ContaEmpresarial(ContaBancaria):
 
     def __init__(self, titular, saldo=0, id=None):

@@ -1,7 +1,9 @@
+# Aqui está os imports de todos os arquivos necessários.
 from banco_dados.banco import ContaBancariaRepository, Database
 from metodos.fintech import ContaEmpresarial
 from interface.interface import iniciar_interface
 
+# Fiz um import de rich pra deixar o terminal mais organizado.
 from rich.console import Console
 from rich.prompt import Prompt
 
