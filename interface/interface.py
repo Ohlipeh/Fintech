@@ -1,6 +1,7 @@
 # Import do customtkinter para configurar o deskotp.
 import customtkinter as ctk
 from metodos.fintech import ContaBancaria
+from controle.controlador import ControladorFinanceiro
 
 
 # Coloquei uma mensagem de erro mundial pro codigo não ficar poluído.
@@ -17,7 +18,7 @@ def mensagem_erro(mensagem):
 
 
 # Aqui é aonde inicia a interface, busco o cb e cb_repo do main e do banco.
-def iniciar_interface(cb, cb_repo):
+def iniciar_interface(controlador):
     # Root mexe na tela principal.
     root = ctk.CTk()
 
@@ -28,7 +29,7 @@ def iniciar_interface(cb, cb_repo):
     titulo.pack(pady=30)
 
     lbl_saldo = ctk.CTkLabel(
-        root, text=f"Saldo atual: R$ {cb.saldo:.2f}", font=("Arial", 12, "bold")
+        root, text=controlador.obter_saldo_inicial(), font=("Arial", 12, "bold")
     )
     lbl_saldo.pack()
 
@@ -46,13 +47,11 @@ def iniciar_interface(cb, cb_repo):
 
         def confirmar_deposito():
             valor = entrada.get()
-            if cb.depositar(valor):
-                cb_repo.atualizar_conta(cb)
-                print("Depósito salvo no banco!")
-                lbl_saldo.configure(text=f"Saldo atual: R$ {cb.saldo:.2f}")
+            sucesso, mensagem = controlador.processar_deposito(valor)
+            lbl_saldo.configure(text=mensagem)
+            if sucesso:
                 janela.destroy()
             else:
-                mensagem_erro("VALOR INVÁLIDO para depósito!")
                 entrada.delete(0, "end")
 
         botao = ctk.CTkButton(janela, text="Depositar", command=confirmar_deposito)
@@ -71,13 +70,12 @@ def iniciar_interface(cb, cb_repo):
 
         def confirmar_saque():
             valor = entrada.get()
-            if cb.sacar(valor):
-                cb_repo.atualizar_conta(cb)
-                print("Saque salvo no banco!")
-                lbl_saldo.configure(text=f"Saldo atual: R$ {cb.saldo:.2f}")
+            sucesso, mensagem = controlador.processar_saque(valor)
+            lbl_saldo.configure(text=mensagem)
+            if sucesso:
                 janela.destroy()
             else:
-                mensagem_erro("VALOR INVÁLIDO para saque!")
+                entrada.delete(0, "end")
 
         # Função para fazer os botões clicaveis.
         botao = ctk.CTkButton(janela, text="Sacar", command=confirmar_saque)
@@ -88,11 +86,12 @@ def iniciar_interface(cb, cb_repo):
         janela.title("Extrato da conta")
         janela.geometry("400x400")
 
-        entrada = ctk.CTkTextbox(janela, width=350, height=300)
-        entrada.pack(pady=20)
+        exibicao_texto = ctk.CTkTextbox(janela, width=350, height=300)
+        exibicao_texto.pack(pady=20)
 
-        for movimento in cb.movimentacoes:
-            entrada.insert("end", movimento + "\n")
+        movimentos = controlador.obter_extrato()
+        for movimento in movimentos:
+            exibicao_texto.insert("end", movimento + "\n")
 
         botao = ctk.CTkButton(janela, text="Fechar", command=janela.destroy)
         botao.pack(pady=20)
@@ -102,10 +101,9 @@ def iniciar_interface(cb, cb_repo):
         janela.title("Extrato")
         janela.geometry("250x150")
 
-        label = ctk.CTkLabel(janela, text="Extrato exportado com sucesso!")
+        sucesso, mensagem = controlador.processar_exportacao()
+        label = ctk.CTkLabel(janela, text=mensagem)
         label.pack(pady=20)
-
-        cb.exportar_extrato()
 
         botao = ctk.CTkButton(janela, text="Ok", command=janela.destroy)
         botao.pack(pady=20)
