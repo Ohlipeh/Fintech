@@ -1,7 +1,7 @@
 # Aqui está os imports de todos os arquivos necessários.
 from banco_dados.banco import ContaBancariaRepository, Database
 from controle.controlador import ControladorFinanceiro
-from metodos.fintech import ContaEmpresarial
+from metodos.fintech import ContaEmpresarial, ContaPoupanca
 from interface.interface import iniciar_interface
 
 # Fiz um import de rich pra deixar o terminal mais organizado.
@@ -26,9 +26,11 @@ def main():
 
     # Criamos uma conta para testes
     titular = Prompt.ask("Digite o nome do titular da conta")
-    cb = ContaEmpresarial(titular)
+    cb = ContaEmpresarial("Sua Empresa")
+    cb = ContaPoupanca(titular)
     controlador = ControladorFinanceiro(cb, cb_repo)
     cb_repo.salvar_conta(cb)
+
     iniciar_interface(controlador)
 
 

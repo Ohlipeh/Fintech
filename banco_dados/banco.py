@@ -30,7 +30,8 @@ class ContaBancariaRepository(Repository):
                 CREATE TABLE IF NOT EXISTS contas (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     titular TEXT NOT NULL,
-                    saldo REAL NOT NULL
+                    saldo REAL NOT NULL,
+                    taxa_rendimento REAL NOT NULL
                 )
             """)
         self.db.conexao.commit()
@@ -39,10 +40,10 @@ class ContaBancariaRepository(Repository):
         cursor = self.db.conexao.cursor()
         cursor.execute(
             """
-                    INSERT INTO contas (titular, saldo)
-                    VALUES (?, ?)
+                    INSERT INTO contas (titular, saldo, taxa_rendimento)
+                    VALUES (?, ?, ?)
             """,
-            (conta.titular, conta.saldo),
+            (conta.titular, conta.saldo, conta.taxa_rendimento),
         )
         conta.id = cursor.lastrowid
         self.db.conexao.commit()
@@ -53,10 +54,10 @@ class ContaBancariaRepository(Repository):
         cursor.execute(
             """
             UPDATE contas
-            SET titular = ?, saldo = ?
+            SET titular = ?, saldo = ?, taxa_rendimento = ?
             WHERE id = ?
             """,
-            (conta.titular, conta.saldo, conta.id),
+            (conta.titular, conta.saldo, conta.taxa_rendimento, conta.id),
         )
 
         self.db.conexao.commit()

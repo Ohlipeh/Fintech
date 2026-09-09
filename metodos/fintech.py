@@ -1,5 +1,8 @@
+from abc import ABC, abstractmethod
+
+
 # Classe ContaBancaria
-class ContaBancaria:
+class ContaBancaria(ABC):
     """
     Criando conta bancaria para uma Fintech
     """
@@ -10,6 +13,7 @@ class ContaBancaria:
         self.__saldo = saldo
         self.movimentacoes = []
 
+    @abstractmethod
     def depositar(self, valor):
         try:
             valor = float(valor)
@@ -22,6 +26,7 @@ class ContaBancaria:
             print("Erro no depósito: O valor informado deve ser um número.")
             return False
 
+    @abstractmethod
     def sacar(self, valor):
         # Aqui coloquei um try pra mensagem de erro, no terminal.
         try:
@@ -82,6 +87,11 @@ class ContaEmpresarial(ContaBancaria):
     def __init__(self, titular, saldo=0, id=None):
         super().__init__(titular, saldo, id)
 
+    def depositar(self, valor):
+        valor = float(valor)
+        valor = abs(valor)
+        return super().depositar(valor)
+
     def sacar(self, valor: float, taxa: float = 5):
         try:
             valor = float(valor)
@@ -91,3 +101,26 @@ class ContaEmpresarial(ContaBancaria):
         except ValueError:
             print("Erro ao sacar: O valor informado deve ser um número.")
             return False
+
+
+# Criei uma classe poupança pra pratica.
+class ContaPoupanca(ContaBancaria):
+
+    def __init__(self, titular, saldo=0, id=None, taxa_rendimento=0.01):
+        super().__init__(titular, saldo, id)
+        self.taxa_rendimento = taxa_rendimento
+
+    def depositar(self, valor):
+        try:
+            valor = float(valor)
+            valor = abs(valor)
+            valor_rendimento = valor + (valor * self.taxa_rendimento)
+            return super().depositar(valor_rendimento)
+        except ValueError:
+            print("Erro no depósito: O valor informado deve ser um número.")
+            return False
+
+    def sacar(self, valor: float, taxa: float = 1):
+        valor = float(valor)
+        valor_total = abs(valor) + taxa
+        return super().sacar(valor_total)
