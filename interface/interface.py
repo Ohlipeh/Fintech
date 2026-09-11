@@ -33,6 +33,46 @@ def iniciar_interface(controlador):
     )
     lbl_saldo.pack()
 
+    # Criei um metodo criar senha pro app ficar um pouco mais robusto e completo
+    def acao_criar_conta():
+        janela = ctk.CTkToplevel()
+        janela.title("Criar nova conta")
+        janela.geometry("300x300")
+
+        label = ctk.CTkLabel(janela, text="Nome titular: ")
+        label.pack(pady=20)
+
+        entrada = ctk.CTkEntry(janela, placeholder_text="Ex: João")
+        entrada.pack(pady=10)
+
+        def confirmar_conta(tipo_escolhido):
+            titular = entrada.get()
+            sucesso, mensagem = controlador.processar_criacao_conta(
+                titular, tipo_escolhido
+            )
+            # Lógica para mostrar a mensagem na tela e fechar a janela...
+            lbl_saldo.configure(text=mensagem)
+            if sucesso:
+                janela.destroy()
+            else:
+                entrada.delete(0, "end")
+
+        # Usando lambda pra criar conta poupança
+        botao_poupanca = ctk.CTkButton(
+            janela,
+            text="Criar Conta Poupança",
+            command=lambda: confirmar_conta("poupanca"),
+        )
+        botao_poupanca.pack(pady=10)
+
+        # Usando lambda pra criar conta poupança
+        botao_empresarial = ctk.CTkButton(
+            janela,
+            text="Criar Conta Empresarial",
+            command=lambda: confirmar_conta("empresarial"),
+        )
+        botao_empresarial.pack(pady=10)
+
     def acao_depositar():
         # ctk.CTkToplevel() cria pop-ups.
         janela = ctk.CTkToplevel()
@@ -108,7 +148,10 @@ def iniciar_interface(controlador):
         botao = ctk.CTkButton(janela, text="Ok", command=janela.destroy)
         botao.pack(pady=20)
 
-    # Função que cria os botões.
+    # Função que chamam os botões.
+    btn_criar = ctk.CTkButton(root, text="Criar Conta", command=acao_criar_conta)
+    btn_criar.pack(pady=5)
+
     btn_depositar = ctk.CTkButton(root, text="Depositar", command=acao_depositar)
     btn_depositar.pack(pady=5)
 

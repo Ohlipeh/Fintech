@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-# Classe ContaBancaria
+# Classe ContaBancaria, usei o ABC Method
 class ContaBancaria(ABC):
     """
     Criando conta bancaria para uma Fintech
@@ -65,8 +65,9 @@ class ContaBancaria(ABC):
     def titular(self):
         return self._titular
 
+    # Método str pra mensagem principal.
     def __str__(self):
-        return f"Conta Empresarial de {self.titular} - Saldo: R${self.saldo}"
+        return f"Conta: {self.titular} - Saldo: R${self.saldo}"
 
     def exibir_extrato(self):
         print(f"Extrato da conta {self.titular}:")
