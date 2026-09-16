@@ -67,7 +67,7 @@ class ContaBancaria(ABC):
 
     # Método str pra mensagem principal.
     def __str__(self):
-        return f"Conta: {self.titular} - Saldo: R${self.saldo}"
+        return f"{self.__class__.__name__}: {self.titular} - Saldo: R${self.saldo}"
 
     def exibir_extrato(self):
         print(f"Extrato da conta {self.titular}:")

@@ -31,19 +31,34 @@ class ContaBancariaRepository(Repository):
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     titular TEXT NOT NULL,
                     saldo REAL NOT NULL,
-                    taxa_rendimento REAL NOT NULL
+                    tipo_conta TEXT NOT NULL,
+                    taxa_rendimento REAL
+                    
                 )
             """)
         self.db.conexao.commit()
 
     def salvar_conta(self, conta):
+        # Descobre o nome da classe do objeto
+        nome_da_classe = conta.__class__.__name__
+        # Só le taxa_rendimento se for ContaPoupança
+        if nome_da_classe == "ContaPoupanca":
+            taxa_para_salvar = conta.taxa_rendimento
+        else:
+            taxa_para_salvar = None
+
         cursor = self.db.conexao.cursor()
         cursor.execute(
             """
-                    INSERT INTO contas (titular, saldo, taxa_rendimento)
-                    VALUES (?, ?, ?)
+                    INSERT INTO contas (titular, saldo, tipo_conta, taxa_rendimento)
+                    VALUES (?, ?, ?, ?)
             """,
-            (conta.titular, conta.saldo, conta.taxa_rendimento),
+            (
+                conta.titular,
+                conta.saldo,
+                nome_da_classe,
+                taxa_para_salvar,
+            ),
         )
         conta.id = cursor.lastrowid
         self.db.conexao.commit()
