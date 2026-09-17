@@ -1,6 +1,8 @@
 # Importação do SQLite
 import sqlite3
 
+from fintech import ContaEmpresarial, ContaPoupanca
+
 
 # Classe Databebase para conectar e desconectar o banco
 class Database:
@@ -69,10 +71,46 @@ class ContaBancariaRepository(Repository):
         cursor.execute(
             """
             UPDATE contas
-            SET titular = ?, saldo = ?, taxa_rendimento = ?
+            SET titular = ?, saldo = ?
             WHERE id = ?
             """,
-            (conta.titular, conta.saldo, conta.taxa_rendimento, conta.id),
+            (conta.titular, conta.saldo, conta.id),
         )
 
         self.db.conexao.commit()
+
+    def buscar_por_id(self, id_conta):
+        cursor = self.db.conexao.cursor()
+        cursor.execute(
+            """
+            SELECT id, titular, saldo, tipo_conta, taxa_rendimento
+            FROM contas
+            WHERE id = ?
+            """,
+            (id_conta,),
+        )
+
+        return cursor.fetchone()
+
+    def buscar_todas(self):
+        cursor = self.db.conexao.cursor()
+        cursor.execute(
+            "SELECT id, titular, saldo, tipo_conta, taxa_rendimento FROM contas"
+        )
+
+        resultado = cursor.fetchall()
+
+        contas = []
+
+        for linha in resultado:
+            if linha[3] == "ContaPoupanca":
+                conta = ContaPoupanca(linha[1], linha[2], linha[4])
+            elif linha[3] == "ContaEmpresarial":
+                conta = ContaEmpresarial(linha[1], linha[2])
+            else:
+                raise ValueError(f"Tipo de conta desconhecido: {linha[3]}")
+
+            conta.id = linha[0]
+            contas.append(conta)
+
+        return contas
